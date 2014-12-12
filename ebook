@@ -1,0 +1,10 @@
+#!/bin/sh
+basedir=`dirname "$0"`
+
+case `uname` in
+    *CYGWIN*) basedir=`cygpath -w "$basedir"`;;
+esac
+
+python "$basedir/ebook.py" "$@"
+ret=$?
+exit $ret
