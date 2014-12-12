@@ -78,7 +78,7 @@ Commands:
         
         template_file = raw_input("TeX Template (leave blank to download the default template): ")
         if not template_file:
-            urllib.urlretrieve('https://github.com/jaden/ebooks/raw/master/pdf-template.tex', 'pdf-template.tex')
+            urllib.urlretrieve('https://github.com/jaden/pyebook/raw/master/pdf-template.tex', 'pdf-template.tex')
             template_file = 'pdf-template.tex'
         
         cover_image = raw_input("Cover image (default: cover.jpg): ")
@@ -88,7 +88,8 @@ Commands:
             obj = {'name':name, 'template_file':template_file, 'cover_image': cover_image}
             json.dump(obj, fp, indent=4)
             
-        os.mkdir(self.build_dir)
+        if not os.path.isdir(self.build_dir):
+            os.mkdir(self.build_dir)
         
     def mobi(self):
         self.epub()
