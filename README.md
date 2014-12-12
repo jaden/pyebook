@@ -55,3 +55,5 @@ To create a Mobi:
 	ebook mobi
 
 Run ebook without any arguments to see all of the possible formats.
+
+Take a look at the examples directory to see an eBook I created in a few minutes from a [Project Gutenberg](https://www.gutenberg.org/) text file.
