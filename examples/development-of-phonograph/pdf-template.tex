@@ -1,0 +1,162 @@
+\documentclass[12pt,oneside]{scrbook}
+
+
+% Fonts and typography
+
+%% Typography
+\usepackage[no-math]{fontspec}
+\defaultfontfeatures{Scale = 1}
+
+%% Fonts
+\setmainfont[Ligatures=TeX]{Verdana}
+\setsansfont[Ligatures=TeX]{Cambria Bold Italic}
+\setmonofont{Consolas}
+
+% Section fonts
+\usepackage{sectsty}
+\allsectionsfont{\sffamily}
+\subsectionfont{\sffamily}
+\chapterfont{\LARGE\sffamily}
+
+
+%% Set polyglossia language
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+
+
+% Page
+
+%% Use full page in book style
+\usepackage{fullpage}
+
+%% Set line spacing
+\usepackage{setspace}
+\setstretch{1.2}
+
+%% Disable paragraph indentation
+\usepackage{parskip}
+
+% Colors
+
+\usepackage{xcolor}
+
+%% Tango color scheme
+\definecolor{SkyBlue}{HTML}{3465A4}
+\definecolor{DarkSkyBlue}{HTML}{204A87}
+
+\definecolor{Plum}{HTML}{75507B}
+
+\definecolor{ScarletRed}{HTML}{CC0000}
+
+
+\definecolor{Aluminium1}{HTML}{EEEEEC}
+\definecolor{Aluminium6}{HTML}{2e3436}
+
+\definecolor{Black}{HTML}{000000}
+
+% Use fancy chapter numbering and set the color
+\usepackage{quotchap}
+\definecolor{chaptergrey}{HTML}{204A87}
+
+% Listings
+\usepackage{upquote}
+
+\usepackage{listings}
+
+\lstdefinelanguage{JavaScript}{
+  keywords = {typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle = \color{SkyBlue}\bfseries,
+  ndkeywords = {class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle = \color{Aluminium6}\bfseries,
+  identifierstyle = \color{Black},
+  sensitive = false,
+  comment = [l]{//},
+  morecomment = [s]{/*}{*/},
+  commentstyle = \color{Plum}\ttfamily,
+  stringstyle = \color{ScarletRed}\ttfamily,
+  morestring = [b]',
+  morestring = [b]"
+}
+
+\lstset{
+  language = JavaScript,
+  backgroundcolor = \color{Aluminium1},
+  extendedchars = true,
+  basicstyle = \normalsize\ttfamily,
+  showstringspaces = false,
+  showspaces = false,
+  tabsize = 1,
+  breaklines = true,
+  showtabs = false
+}
+
+
+% Links
+
+%% Hyperref
+\usepackage[colorlinks, breaklinks, bookmarks, xetex]{hyperref}
+
+\hypersetup {
+  pdfauthor={$author-meta$},
+  pdftitle={$title-meta$},
+  linkcolor = DarkSkyBlue,
+  citecolor = DarkSkyBlue,
+  filecolor = DarkSkyBlue,
+  urlcolor = DarkSkyBlue
+}
+
+%% Don’t use Mono font for URLs
+\urlstyle{same}
+
+
+% Images
+
+\usepackage{graphicx}
+\usepackage{incgraph}
+
+\usepackage{eso-pic}
+\newcommand\Cover{%
+    \put(0,0){%
+        \parbox[b][\paperheight]{\paperwidth}{%
+        \vfill
+        \centering
+        \includegraphics[height=\paperheight,width=\paperwidth]{cover.jpg}
+        \vfill
+}}}
+
+
+% Pandoc hacks
+
+%% Normal enumerates processing
+\usepackage{enumerate}
+
+%% Disable section numbers
+\setcounter{secnumdepth}{0}
+
+% Makes table of contents look nicer
+\usepackage{tocstyle}
+\usetocstyle{standard}
+
+% Set level of sections to be shown in Table of Contents
+% 0 = chapters, 1 = chapters/sections, 2 = chapters/sections/subsections
+\setcounter{tocdepth}{1}
+
+\begin{document}
+
+  % Title page
+  \AddToShipoutPicture*{\Cover} % * = only use it on one page
+  \ClearShipoutPicture
+  
+  \null\newpage
+  
+  \mainmatter
+  \phantomsection  
+  \addcontentsline{toc}{chapter}{Contents}
+  \renewcommand{\contentsname}{Contents}
+  \tableofcontents
+  
+  % Book contents
+
+  $body$
+  
+\end{document}
