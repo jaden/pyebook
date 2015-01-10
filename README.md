@@ -42,18 +42,22 @@ Write your book in Markdown (the file should be the value you chose for basename
 
 ## Generate your desired format
 
-To create a PDF of your ebook:
+For example...
+
+to create a PDF of your ebook:
 
 	ebook pdf
 
-To create an ePub:
+to create an ePub:
 	
 	ebook epub
 
-To create a Mobi:
+to create a Mobi using [KindleGen](https://kindlegen.s3.amazonaws.com/Readme.txt):
 
 	ebook mobi
 
 Run ebook without any arguments to see all of the possible formats.
 
 Take a look at the examples directory to see an eBook I created in a few minutes from a [Project Gutenberg](https://www.gutenberg.org/) text file.
+
+Use Amazon's Kindle Previewer to emulate different Kindle Devices

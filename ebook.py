@@ -12,6 +12,7 @@ class Ebook(object):
 
     ebook_json = 'ebook.json'
     json_obj = None
+    args = None
     
     build_dir = 'output'
     
@@ -19,6 +20,7 @@ class Ebook(object):
     name = None
     cover_image = None
     template_file = None
+    
 
     def __init__(self):
         parser = argparse.ArgumentParser(
@@ -30,8 +32,10 @@ Commands:
     epub            Build the ebook as an ePub file
     help            Display help information about ebook
     html            Build the ebook as an HTML file
+    htmltoc         Build the ebook as an HTML file with a table of contents
     init            Interactively create an ebook.json file
-    mobi            Build the ebook as a Mobi file
+    mobi            Build the ebook as a Mobi file from the ePub file
+    mobihtml        Build the ebook as a Mobi file from the HTML file
     odt             Build the ebook as a LibreOffice document
     pdf             Build the ebook as a PDF document
     tex             Build the ebook as a TeX document
@@ -40,21 +44,28 @@ Commands:
 
         parser.add_argument('command', help="The command to run")
         parser.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true")
+        parser.add_argument("-n", "--dry-run", help="don't actually run the command, do a dry run", action="store_true")
         
-        # Need to exclude remaining arguments for validation to work
-        args = parser.parse_args(sys.argv[1:2])
+        args = parser.parse_args(sys.argv[1:])
+        
+        if len(sys.argv[1:2]) > 0:
+            command = sys.argv[1:2][0]
+        else:
+            command = ''
+        
+        if command == 'help':
+            parser.print_help()
+            exit(1)
+                    
+        if not hasattr(self, command):
+            print "Error: %s is not a valid command\n" % command
+            parser.print_help()
+            exit(1)
+        
+        self.args = args
         
         if os.path.isfile(self.ebook_json):
-            self.load_json()
-        
-        if args.command == 'help':
-            parser.print_help()
-            exit(1)
-            
-        if not hasattr(self, args.command):
-            print "Error: %s is not a valid command\n" % args.command
-            parser.print_help()
-            exit(1)
+            self.load_json()        
         
         getattr(self, args.command)()
 
@@ -65,8 +76,11 @@ Commands:
         self.pandoc(["--epub-cover-image", self.cover_image, "%s.md" % self.name, "-o",
             "%s/%s.epub" % (self.build_dir, self.name)])
         
-    def html(self):
+    def htmltoc(self):
         self.pandoc(["-s", "-S", "--toc", "%s.md" % self.name, "-o", "%s/%s.html" % (self.build_dir, self.name)])
+        
+    def html(self):
+        self.pandoc(["-s", "-S", "%s.md" % self.name, "-o", "%s/%s.html" % (self.build_dir, self.name)])
         
     def init(self):
     
@@ -93,7 +107,26 @@ Commands:
         
     def mobi(self):
         self.epub()
-        call(["kindlegen.exe", "%s/%s.epub" % (self.build_dir, self.name), "-o", "%s.mobi" % self.name])
+        
+        opts = ["kindlegen.exe", "%s/%s.epub" % (self.build_dir, self.name), "-o", "%s.mobi" % self.name]
+        
+        self.mobi_all(opts)        
+        
+    def mobihtml(self):
+        self.html()
+        
+        opts = ["kindlegen.exe", "%s/%s.html" % (self.build_dir, self.name), "-o", "%s.mobi" % self.name]
+        
+        self.mobi_all(opts)
+    
+    def mobi_all(self, opts):                
+        if self.args.verbose:
+            opts.insert(1, '-verbose')
+                
+        if self.args.verbose or self.args.dry_run:
+            print ' '.join(opts)
+        if not self.args.dry_run:            
+            call(opts)
         
     def pdf(self):
         self.build_pdf_or_tex('pdf')
@@ -108,7 +141,10 @@ Commands:
         self.pandoc(["%s.md" % self.name, "-o", "%s/%s.txt" % (self.build_dir, self.name)])
         
     def pandoc(self, opts):
-        call(['pandoc'] + opts)
+        if self.args.verbose or self.args.dry_run:
+            print "pandoc " + ' '.join(opts)
+        if not self.args.dry_run:
+            call(['pandoc'] + opts)
         
     def build_pdf_or_tex(self, type):
         self.pandoc(["--latex-engine", "xelatex", "--template", self.template_file, "%s.md" % self.name,
